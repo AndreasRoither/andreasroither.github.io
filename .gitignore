@@ -93,3 +93,12 @@ web_modules/
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# generated files
+lib/
+esm/
+types/
+dist/
+tsconfig.tsbuildinfo
+
+.linaria-cache
