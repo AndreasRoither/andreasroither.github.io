@@ -4,6 +4,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import ESLintPlugin from "eslint-webpack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 const config: Configuration = {
   mode: "production",
@@ -18,16 +19,39 @@ const config: Configuration = {
       {
         test: /\.(ts|js)x?$/i,
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: [
-              "@babel/preset-env",
-              "@babel/preset-react",
-              "@babel/preset-typescript",
-            ],
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              presets: [
+                "@babel/preset-env",
+                "@babel/preset-react",
+                "@babel/preset-typescript",
+                "@linaria",
+              ],
+            },
           },
-        },
+          {
+            loader: "@linaria/webpack-loader",
+            options: {
+              sourceMap: process.env.NODE_ENV !== "production",
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: process.env.NODE_ENV !== "production",
+            },
+          },
+        ],
       },
     ],
   },
@@ -37,6 +61,9 @@ const config: Configuration = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/index.html",
+    }),
+    new MiniCssExtractPlugin({
+      filename: "styles.css",
     }),
     new ForkTsCheckerWebpackPlugin({
       async: false,
